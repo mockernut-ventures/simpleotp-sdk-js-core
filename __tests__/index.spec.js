@@ -80,7 +80,7 @@ test('authWithURLCode() updates localStorage with the user details when the http
   const simpleOTP = new SimpleOTP('mocksiteid')
   const mockPost = vi.spyOn(http, 'post')
   mockPost.mockImplementation(() => {
-    return { data: { data: { email: 'billg@microsoft.com', token: 'reallysecuretoken' } } }
+    return { data: { data: { id: 'someid', email: 'billg@microsoft.com', token: 'reallysecuretoken' } } }
   })
 
   window.location = { search: '?simpleotp_code=reallysecurecode'}
@@ -102,7 +102,7 @@ test('authWithURLCode() throws when the code is missing from the url params', as
   const mockPost = vi.spyOn(http, 'post')
   simpleOTP.signOut()
   mockPost.mockImplementation(() => {
-    return { data: { data: { email: 'billg@microsoft.com', token: 'reallysecuretoken' } } }
+    return { data: { data: { id: 'someid', email: 'billg@microsoft.com', token: 'reallysecuretoken' } } }
   })
 
   window.location = { search: '?not_a_simpleotp_code=reallysecurecode'}
@@ -120,7 +120,7 @@ test('authWithURLCode() returns the error code in the response when the http cal
         data: {       
           code: 'invalid_auth_code', 
           message: 'bad auth code', 
-          data: { email: 'billg@microsoft.com', token: 'reallysecuretoken' } 
+          data: { id: 'someid', email: 'billg@microsoft.com', token: 'reallysecuretoken' } 
         } 
       }
     }
@@ -145,7 +145,7 @@ test('authWithURLCode() returns a networking error in the response when the http
         data: {       
           code: 'invalid_auth_code', 
           message: 'bad auth code', 
-          data: { email: 'billg@microsoft.com', token: 'reallysecuretoken' } 
+          data: { id: 'someid', email: 'billg@microsoft.com', token: 'reallysecuretoken' } 
         } 
       }
     }

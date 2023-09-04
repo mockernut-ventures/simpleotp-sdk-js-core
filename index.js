@@ -26,11 +26,12 @@ export const AuthStatusCode = Object.freeze({
 
 export class AuthenticatedUser {
   /**
-   * 
+   * @param {string} id
    * @param {string} email 
    * @param {string} token 
    */
-  constructor (email, token) {
+  constructor (id, email, token) {
+    this.id = id
     this.email = email
     this.token = token
   }
@@ -64,7 +65,7 @@ export class SimpleOTP {
     if (!siteID || typeof(siteID) !== 'string') {
       throw Error('siteID must be a non-empty string')
     }
-    
+
     if (apiURL && !isValidURL(apiURL)) {
       throw Error('apiURL must be a valid URL if defined')
     }
@@ -128,7 +129,7 @@ export class SimpleOTP {
 
     const httpResponseData = response.data
     const apiResponseData = httpResponseData.data
-    const user = new AuthenticatedUser(apiResponseData.email, apiResponseData.token)
+    const user = new AuthenticatedUser(apiResponseData.id, apiResponseData.email, apiResponseData.token)
     localStorage.setItem(this.simpleOTPUserKey, JSON.stringify(user))
     return new SiteAuthResponse(httpResponseData.code, httpResponseData.message, httpResponseData.data)
   }
@@ -144,7 +145,7 @@ export class SimpleOTP {
       return null
     }
     const userObj = JSON.parse(user)
-    return new AuthenticatedUser(userObj.email, userObj.token)
+    return new AuthenticatedUser(userObj.id, userObj.email, userObj.token)
   }
 
   /**
