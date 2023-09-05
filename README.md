@@ -26,5 +26,5 @@ The only data we collect from a signup is an email address, which is only used i
 **We offer self-hosting**:
 Host Simple OTP on your own servers and store user emails in your own database with the Pro plan. We'll also provide you with support if you need it.
 
-**Our [pricing](#pricing-scrollpoint) is fair**:
+**Our [pricing](https://simpleotp.com/#pricing-scrollpoint) is fair**:
 We have consistent, flat-rate pricing with high enough user caps to allow you to operate a production website. Unlike the competition, we don't arbitrarily charge more based on what type of website or business you operate.
