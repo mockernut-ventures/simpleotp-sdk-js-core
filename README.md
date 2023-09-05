@@ -4,10 +4,10 @@ This is the core JavaScript-based authentication SDK for [Simple OTP](https://si
 
 Integration documentation varies depending on which frontend library you're using, see below:
 
-# React
+# React: Docs and Component Examples
 https://github.com/mockernut-ventures/simpleotp-sdk-js-react#readme
 
-# Vue
+# Vue: Docs and Component Examples
 https://github.com/mockernut-ventures/simpleotp-sdk-js-vue#readme
 
 # Others
