@@ -75,6 +75,84 @@ test('signIn() returns a networking error when the http call does not have a res
   expect(resp.message).toBe('Could not connect to the server. Try again in a few moments.')
 })
 
+test('auth() updates localStorage with the user details when the http call succeeds', async() => {
+  const simpleOTP = new SimpleOTP('mocksiteid')
+  const mockPost = vi.spyOn(http, 'post')
+  mockPost.mockImplementation(() => {
+    return { data: { data: { id: 'someid', email: 'billg@microsoft.com', token: 'reallysecuretoken' } } }
+  })
+
+  const authResponse = await simpleOTP.auth('reallysecurecode')
+  expect(authResponse).toBeTruthy()
+  expect(authResponse.data).toBeTruthy()
+  expect(authResponse.data.email).toBe('billg@microsoft.com')
+  expect(authResponse.data.token).toBe('reallysecuretoken')
+
+  // Make sure the user saved to local storage has the same props as the user returned above
+  expect(simpleOTP.getUser().email).toBe(authResponse.data.email)
+  expect(simpleOTP.getUser().token).toBe(authResponse.data.token)
+  expect(simpleOTP.isAuthenticated()).toBe(true)
+})
+
+test('auth() throws when the code is missing', async() => {
+  const simpleOTP = new SimpleOTP('mocksiteid')
+  const mockPost = vi.spyOn(http, 'post')
+  simpleOTP.signOut()
+  mockPost.mockImplementation(() => {
+    return { data: { data: { id: 'someid', email: 'billg@microsoft.com', token: 'reallysecuretoken' } } }
+  })
+
+  expect(async () => await simpleOTP.auth()).rejects.toThrow()
+  expect(simpleOTP.getUser()).toBeNull()
+})
+
+test('auth() returns the error code in the response when the http call returns an error response', async() => {
+  const simpleOTP = new SimpleOTP('mocksiteid')
+  const mockPost = vi.spyOn(http, 'post')
+  mockPost.mockImplementation(() => {
+    throw { 
+      response: {
+        data: {       
+          code: 'invalid_auth_code', 
+          message: 'bad auth code', 
+          data: { id: 'someid', email: 'billg@microsoft.com', token: 'reallysecuretoken' } 
+        } 
+      }
+    }
+  })
+
+
+  const res = await simpleOTP.auth('reallysecurecode')
+  expect(res.code).toBe('invalid_auth_code')
+  expect(res.message).toBe('bad auth code')
+
+  expect(simpleOTP.getUser()).toBeNull()
+  expect(simpleOTP.isAuthenticated()).toBe(false)
+})
+
+test('auth() returns a networking error in the response when the http call response does not have a response prop', async() => {
+  const simpleOTP = new SimpleOTP('mocksiteid')
+  const mockPost = vi.spyOn(http, 'post')
+  mockPost.mockImplementation(() => {
+    throw { 
+      response2: {
+        data: {       
+          code: 'invalid_auth_code', 
+          message: 'bad auth code', 
+          data: { id: 'someid', email: 'billg@microsoft.com', token: 'reallysecuretoken' } 
+        } 
+      }
+    }
+  })
+
+  const res = await simpleOTP.auth('reallysecurecode')
+  expect(res.code).toBe(AuthStatusCode.NetworkingError.description)
+  expect(res.message).toBe('Could not connect to the server. Try again in a few moments.')
+
+  expect(simpleOTP.getUser()).toBeNull()
+  expect(simpleOTP.isAuthenticated()).toBe(false)
+})
+
 
 test('authWithURLCode() updates localStorage with the user details when the http call succeeds', async() => {
   const simpleOTP = new SimpleOTP('mocksiteid')
@@ -85,7 +163,7 @@ test('authWithURLCode() updates localStorage with the user details when the http
 
   window.location = { search: '?simpleotp_code=reallysecurecode'}
 
-  const authResponse = await simpleOTP.authWithURLCode('support@simpleotp.com')
+  const authResponse = await simpleOTP.authWithURLCode()
   expect(authResponse).toBeTruthy()
   expect(authResponse.data).toBeTruthy()
   expect(authResponse.data.email).toBe('billg@microsoft.com')
@@ -107,7 +185,7 @@ test('authWithURLCode() throws when the code is missing from the url params', as
 
   window.location = { search: '?not_a_simpleotp_code=reallysecurecode'}
 
-  expect(async () => await simpleOTP.authWithURLCode('support@simpleotp.com')).rejects.toThrow()
+  expect(async () => await simpleOTP.authWithURLCode()).rejects.toThrow()
   expect(simpleOTP.getUser()).toBeNull()
 })
 
@@ -128,7 +206,7 @@ test('authWithURLCode() returns the error code in the response when the http cal
 
   window.location = { search: '?simpleotp_code=reallysecurecode'}
 
-  const res = await simpleOTP.authWithURLCode('support@simpleotp.com')
+  const res = await simpleOTP.authWithURLCode()
   expect(res.code).toBe('invalid_auth_code')
   expect(res.message).toBe('bad auth code')
 
@@ -153,7 +231,7 @@ test('authWithURLCode() returns a networking error in the response when the http
 
   window.location = { search: '?simpleotp_code=reallysecurecode'}
 
-  const res = await simpleOTP.authWithURLCode('support@simpleotp.com')
+  const res = await simpleOTP.authWithURLCode()
   expect(res.code).toBe(AuthStatusCode.NetworkingError.description)
   expect(res.message).toBe('Could not connect to the server. Try again in a few moments.')
 
@@ -170,7 +248,7 @@ test('isAuthenticated() returns false after the user is signed out', async() => 
 
   window.location = { search: '?simpleotp_code=reallysecurecode'}
 
-  const user = await simpleOTP.authWithURLCode('support@simpleotp.com')
+  const user = await simpleOTP.authWithURLCode()
   expect(user).toBeTruthy()
   expect(simpleOTP.getUser()).toBeTruthy()
   expect(simpleOTP.isAuthenticated()).toBe(true)

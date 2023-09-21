@@ -115,24 +115,38 @@ export class SimpleOTP {
       throw Error(SIMPLEOTP_CODE_PARAM_NAME + ' was not found in the url params.')
     }
 
-    let response = null
-    try { 
-      response = await http.post(`${this.apiURL}/v1/sites/${this.siteID}/auth`, { code })
-    } catch(e) {
-      const errorHTTPResponseData = e.response?.data
-      if (errorHTTPResponseData) {
-        return new SiteAuthResponse(errorHTTPResponseData.code, errorHTTPResponseData.message, errorHTTPResponseData.data)
-      } else {
-        return new SiteAuthResponse(SignInStatusCode.NetworkingError.description, NETWORKING_ERROR_MESSAGE, null)
-      }
-    }
-
-    const httpResponseData = response.data
-    const apiResponseData = httpResponseData.data
-    const user = new AuthenticatedUser(apiResponseData.id, apiResponseData.email, apiResponseData.token)
-    localStorage.setItem(this.simpleOTPUserKey, JSON.stringify(user))
-    return new SiteAuthResponse(httpResponseData.code, httpResponseData.message, httpResponseData.data)
+    return await this.auth(code)
   }
+
+  /**
+   * Authenticates a user based on the code param passed to this method.
+   * The User is also saved in localStorage so that you can reference it elsewhere in the app. Use getUser() for this purpose.
+   * @param {string} code 
+   * @returns {Promise<SiteAuthResponse>}
+   */
+    async auth(code) {
+      if (!code) {
+        throw Error('code must be specified to use the auth method')
+      }
+  
+      let response = null
+      try { 
+        response = await http.post(`${this.apiURL}/v1/sites/${this.siteID}/auth`, { code })
+      } catch(e) {
+        const errorHTTPResponseData = e.response?.data
+        if (errorHTTPResponseData) {
+          return new SiteAuthResponse(errorHTTPResponseData.code, errorHTTPResponseData.message, errorHTTPResponseData.data)
+        } else {
+          return new SiteAuthResponse(SignInStatusCode.NetworkingError.description, NETWORKING_ERROR_MESSAGE, null)
+        }
+      }
+  
+      const httpResponseData = response.data
+      const apiResponseData = httpResponseData.data
+      const user = new AuthenticatedUser(apiResponseData.id, apiResponseData.email, apiResponseData.token)
+      localStorage.setItem(this.simpleOTPUserKey, JSON.stringify(user))
+      return new SiteAuthResponse(httpResponseData.code, httpResponseData.message, httpResponseData.data)
+    }
 
   /**
    * Fetches the currently authenticated user, if any, from localStorage and returns it. If there isn't an authenticated user,
