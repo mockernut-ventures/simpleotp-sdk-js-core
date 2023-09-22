@@ -137,7 +137,7 @@ export class SimpleOTP {
         if (errorHTTPResponseData) {
           return new SiteAuthResponse(errorHTTPResponseData.code, errorHTTPResponseData.message, errorHTTPResponseData.data)
         } else {
-          return new SiteAuthResponse(SignInStatusCode.NetworkingError.description, NETWORKING_ERROR_MESSAGE, null)
+          return new SiteAuthResponse(AuthStatusCode.NetworkingError.description, NETWORKING_ERROR_MESSAGE, null)
         }
       }
   
