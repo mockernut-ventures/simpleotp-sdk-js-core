@@ -16,6 +16,9 @@ If you aren't using either of the above frameworks, you will just need to use th
 
 For examples of how to use the core library without the React or Vue plugin, see [here](https://github.com/mockernut-ventures/simpleotp-sdk-js-core/blob/main/__tests__/index.spec.js).
 
+# Magic Link vs. Code-based Authentication
+The only situation where we recommend Code-based authentication is when users cannot click a web URL to open your app. For example, progressive web apps (PWAs) have this problem and should use code based authentication. All other apps should use Magic Links.
+
 # About Simple OTP
 **We make integration easy for developers**:
 Install our JavaScript SDK and integrate in just a few lines of code. With our pro plan, you can use our API and webhook events to automate tasks such as blacklisting users, creating sites, and updating account details.
