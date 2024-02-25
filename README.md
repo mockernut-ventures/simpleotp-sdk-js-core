@@ -21,13 +21,13 @@ The only situation where we recommend Code-based authentication is when users ca
 
 # About Simple OTP
 **We make integration easy for developers**:
-Install our JavaScript SDK and integrate in just a few lines of code. With our pro plan, you can use our API and webhook events to automate tasks such as blacklisting users, creating sites, and updating account details.
+Install our JavaScript SDK and integrate in just a few lines of code. You can use our API and webhook events to automate tasks such as blacklisting users, creating sites, and updating account details.
 
 **We obsess over privacy**:
-The only data we collect from a signup is an email address, which is only used in a transactional fashion as a part of the passwordless sign-in process. Your users' email addresses are never shared with third party companies.
+The only data Simple OTP collects from a signup is an email address, which is only used in a transactional fashion as a part of the passwordless sign-in process. Your users' email addresses are never shared with third party companies.
 
-**We offer self-hosting**:
-Host Simple OTP on your own servers and store user emails in your own database with the Pro plan. We'll also provide you with support if you need it.
+**We offer self-hosting and source code access**:
+Host Simple OTP on your own servers and store user emails in your own database. We'll also provide you with support if you need it.
 
 **Our [pricing](https://simpleotp.com/#pricing-scrollpoint) is fair**:
-We have consistent, flat-rate pricing with high enough user caps to allow you to operate a production website. Unlike the competition, we don't arbitrarily charge more based on what type of website or business you operate.
+We have consistent, flat-rate, "pay once" pricing with unlimited user caps to allow you to operate a production website. Unlike the competition, we don't arbitrarily charge more based on what type of website or business you operate.
